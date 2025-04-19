@@ -1,6 +1,5 @@
 // src/components/common/Toast.jsx
 import { createContext, useContext, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle, AlertCircle, Info, X } from 'lucide-react';
 
 const ToastContext = createContext({
@@ -35,39 +34,24 @@ export const ToastProvider = ({ children }) => {
 
 export const Toaster = ({ toasts = [] }) => {
   const icons = {
-    success: <CheckCircle className="w-5 h-5 text-success" />,
-    error: <AlertCircle className="w-5 h-5 text-error" />,
-    info: <Info className="w-5 h-5 text-primary" />,
+    success: <CheckCircle className="w-5 h-5 text-green-500" />,
+    error: <AlertCircle className="w-5 h-5 text-red-500" />,
+    info: <Info className="w-5 h-5 text-blue-500" />,
   };
   
   return (
     <div className="fixed bottom-4 right-4 z-50 space-y-2">
-      <AnimatePresence>
-        {toasts.map((toast) => (
-          <motion.div
-            key={toast.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="flex items-center p-4 rounded-md shadow-md bg-white dark:bg-gray-800 border-l-4 min-w-[300px]"
-            style={{
-              borderLeftColor: 
-                toast.type === 'success' ? '#10B981' : 
-                toast.type === 'error' ? '#EF4444' : '#3B82F6',
-            }}
-          >
-            <div className="mr-3">
-              {icons[toast.type] || icons.info}
-            </div>
-            <div className="flex-1 text-gray-800 dark:text-gray-200">
-              {toast.message}
-            </div>
-            <button className="ml-3" onClick={() => {}}>
-              <X className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-            </button>
-          </motion.div>
-        ))}
-      </AnimatePresence>
+      {toasts.map((toast) => (
+        <div
+          key={toast.id}
+          className="flex items-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg 
+                     border border-gray-200 dark:border-gray-700
+                     transition-all duration-300 ease-in-out"
+        >
+          <div className="mr-3">{icons[toast.type]}</div>
+          <p className="text-sm text-gray-700 dark:text-gray-300">{toast.message}</p>
+        </div>
+      ))}
     </div>
   );
 };

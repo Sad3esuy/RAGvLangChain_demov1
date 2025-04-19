@@ -67,15 +67,17 @@ const SettingsPage = () => {
             <Button
               variant={!isDark ? 'primary' : 'outline'}
               onClick={() => toggleTheme()}
-              leftIcon={<Sun size={20} />}
+              className="flex items-center gap-2"
             >
+              <Sun size={20} />
               {t('settings.light')}
             </Button>
             <Button
               variant={isDark ? 'primary' : 'outline'}
               onClick={() => toggleTheme()}
-              leftIcon={<Moon size={20} />}
+              className="flex items-center gap-2"
             >
+              <Moon size={20} />
               {t('settings.dark')}
             </Button>
           </div>
@@ -88,15 +90,17 @@ const SettingsPage = () => {
             <Button
               variant={i18n.language === 'en' ? 'primary' : 'outline'}
               onClick={() => handleLanguageChange('en')}
-              leftIcon={<Languages size={20} />}
+              className="flex items-center gap-2"
             >
+              <Languages size={20} />
               English
             </Button>
             <Button
               variant={i18n.language === 'vi' ? 'primary' : 'outline'}
               onClick={() => handleLanguageChange('vi')}
-              leftIcon={<Languages size={20} />}
+              className="flex items-center gap-2"
             >
+              <Languages size={20} />
               Tiếng Việt
             </Button>
           </div>
@@ -164,8 +168,9 @@ const SettingsPage = () => {
             <Button
               variant="danger"
               onClick={handleClearData}
-              leftIcon={<Trash2 size={20} />}
+              className="flex items-center gap-2"
             >
+              <Trash2 size={20} />
               {t('settings.clearData')}
             </Button>
           </div>
@@ -176,8 +181,9 @@ const SettingsPage = () => {
         <Button
           variant="primary"
           onClick={handleSaveSettings}
-          leftIcon={<Database size={20} />}
+          className="flex items-center gap-2"
         >
+          <Database size={20} />
           {t('common.save')}
         </Button>
       </div>

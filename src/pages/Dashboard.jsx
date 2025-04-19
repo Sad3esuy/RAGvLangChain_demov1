@@ -26,26 +26,34 @@ const Dashboard = () => {
         { name: 'Sun', queries: 2 },
       ]
     });
-  }, []);
+  }, [setStats]);
+  
+  // Ensure stats has default values if not yet loaded
+  const safeStats = {
+    documentCount: stats?.documentCount || 0,
+    queryCount: stats?.queryCount || 0,
+    avgResponseTime: stats?.avgResponseTime || 0,
+    activityData: stats?.activityData || []
+  };
   
   const statsCards = [
     {
       title: t('dashboard.totalDocuments'),
-      value: stats.documentCount,
+      value: safeStats.documentCount,
       icon: <FileText size={24} className="text-primary" />,
       change: '+3 this week',
       positive: true
     },
     {
       title: t('dashboard.totalQueries'),
-      value: stats.queryCount,
+      value: safeStats.queryCount,
       icon: <MessagesSquare size={24} className="text-secondary" />,
       change: '+12 this week',
       positive: true
     },
     {
       title: t('dashboard.avgResponseTime'),
-      value: `${stats.avgResponseTime}s`,
+      value: `${safeStats.avgResponseTime}s`,
       icon: <Clock size={24} className="text-accent" />,
       change: '-0.2s from last week',
       positive: true
@@ -61,22 +69,18 @@ const Dashboard = () => {
         </p>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {statsCards.map((card, index) => (
-          <Card key={index} className="border border-gray-100 dark:border-gray-700">
-            <div className="flex justify-between items-start">
+          <Card key={index} className="p-6">
+            <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  {card.title}
-                </h3>
-                <p className="text-3xl font-semibold mt-2">
-                  {card.value}
-                </p>
-                <p className={`text-sm mt-1 ${card.positive ? 'text-success' : 'text-error'}`}>
+                <p className="text-sm text-gray-500 dark:text-gray-400">{card.title}</p>
+                <h3 className="text-2xl font-bold mt-1">{card.value}</h3>
+                <p className={`text-xs mt-1 ${card.positive ? 'text-green-500' : 'text-red-500'}`}>
                   {card.change}
                 </p>
               </div>
-              <div className="p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
+              <div className="p-3 bg-gray-100 dark:bg-gray-700 rounded-full">
                 {card.icon}
               </div>
             </div>
@@ -84,19 +88,15 @@ const Dashboard = () => {
         ))}
       </div>
       
-      <Card>
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-medium">Query Activity</h3>
-          <div className="text-sm text-gray-500 dark:text-gray-400">Last 7 days</div>
-        </div>
-        
+      <Card className="p-6">
+        <h3 className="text-lg font-medium mb-4">Activity</h3>
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={stats.activityData || []}>
+            <BarChart data={safeStats.activityData}>
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip />
-              <Bar dataKey="queries" fill="#3B82F6" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="queries" fill="#4f46e5" />
             </BarChart>
           </ResponsiveContainer>
         </div>

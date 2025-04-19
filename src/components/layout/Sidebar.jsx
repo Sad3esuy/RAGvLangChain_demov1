@@ -26,13 +26,11 @@ function Sidebar({ open, onClose }) {
         </div>
       )}
       
-      <motion.aside
-        className={`fixed md:sticky top-0 left-0 z-50 h-full md:h-[calc(100vh-4rem)] w-64 transition-transform transform 
+      <aside
+        className={`fixed md:sticky top-0 left-0 z-50 h-full md:h-[calc(100vh-4rem)] w-64 
                   ${open ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0
-                  bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto flex-shrink-0`}
-        initial={false}
-        animate={{ x: open ? 0 : '-100%' }}
-        transition={{ duration: 0.2, ease: 'easeInOut' }}
+                  bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto flex-shrink-0
+                  transition-transform duration-200 ease-in-out`}
       >
         <div className="p-4">
           <div className="flex items-center justify-between mb-8">
@@ -50,20 +48,19 @@ function Sidebar({ open, onClose }) {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`flex items-center px-3 py-3 rounded-md transition-colors duration-150 ${
+                className={`flex items-center px-4 py-2 text-sm font-medium rounded-md ${
                   isActive(link.path)
                     ? 'bg-primary text-white'
                     : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                 }`}
-                onClick={() => onClose()}
               >
                 <span className="mr-3">{link.icon}</span>
-                <span>{link.label}</span>
+                {link.label}
               </Link>
             ))}
           </nav>
         </div>
-      </motion.aside>
+      </aside>
     </>
   );
 }
