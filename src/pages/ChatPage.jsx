@@ -54,14 +54,20 @@ const ChatPage = () => {
   };
   
   return (
-    <div className="h-[calc(100vh-12rem)]">
-      {currentConversation && (
-        <ChatInterface
-          messages={currentConversation.messages}
-          onSendMessage={handleSendMessage}
-          isLoading={isLoading}
-        />
-      )}
+    <div className="flex flex-col h-full">
+      <div className="flex-1 min-h-0">
+        {currentConversation && (
+          <ChatInterface
+            messages={currentConversation.messages}
+            onSendMessage={handleSendMessage}
+            isLoading={isLoading}
+          />
+        )}
+      </div>
+      {/* Footer nằm ngoài ChatInterface, dính đáy page */}
+      <footer className="border-t border-gray-200 dark:border-gray-700 text-center py-2 text-sm text-gray-500 dark:text-gray-400 mt-auto">
+        © RAGvLangChain_demo v1
+      </footer>
     </div>
   );
 };

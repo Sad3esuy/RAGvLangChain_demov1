@@ -7,11 +7,11 @@ function Layout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="h-screen flex flex-col overflow-hidden">
       <Header onMenuClick={() => setSidebarOpen(true)} />
-      <div className="flex flex-1">
+      <div className="flex flex-1 overflow-hidden">
         <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-        <main className="flex-1 p-4 md:p-6 max-w-7xl mx-auto w-full">
+        <main className="flex-1 p-4 md:p-6 max-w-[850px] mx-auto w-full overflow-y-auto scrollbar-hide">
           {children}
         </main>
       </div>

@@ -98,7 +98,7 @@ const SettingsPage = () => {
             <Button
               variant={i18n.language === 'vi' ? 'primary' : 'outline'}
               onClick={() => handleLanguageChange('vi')}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 whitespace-nowrap"
             >
               <Languages size={20} />
               Tiếng Việt
@@ -168,7 +168,7 @@ const SettingsPage = () => {
             <Button
               variant="danger"
               onClick={handleClearData}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 whitespace-nowrap"
             >
               <Trash2 size={20} />
               {t('settings.clearData')}

@@ -44,16 +44,21 @@ const ChatInterface = ({ onSendMessage, messages = [], isLoading = false }) => {
   };
   
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex-1 overflow-y-auto p-4 space-y-6">
+    <div className="flex flex-col h-full relative overflow-hidden">
+      <div className="flex-1 overflow-y-auto p-4 space-y-6 bg-[#ffffff22] rounded-[10px]">
         {messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-auto text-center p-6 text-gray-500 dark:text-gray-400">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="flex flex-col items-center justify-center h-auto text-center p-6 text-gray-500 dark:text-gray-400"
+          >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mb-4 text-gray-300 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
             </svg>
             <h3 className="text-lg font-medium text-gray-700 dark:text-gray-300">Ask questions about your documents</h3>
             <p className="mt-1 max-w-md">Start a conversation by uploading documents and asking questions about them.</p>
-          </div>
+          </motion.div>
         ) : (
           messages.map((msg, index) => (
             <ChatMessage key={index} message={msg} />
@@ -78,27 +83,27 @@ const ChatInterface = ({ onSendMessage, messages = [], isLoading = false }) => {
         <div ref={messagesEndRef} />
       </div>
       
-      <div className="border-t border-gray-200 dark:border-gray-700 p-4">
+      <div className="p-4">
         <div className="flex space-x-3">
           <div className="flex-1 relative">
             <textarea
               ref={textareaRef}
-              className="input min-h-[50px] max-h-[200px] py-2.5 resize-none"
+              className="input w-full min-h-[76px] max-h-[200px] py-2.5 resize-none"
               placeholder={t('chat.placeholder')}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={handleKeyDown}
               rows={1}
             />
+            <Button
+              onClick={handleSend}
+              disabled={!message.trim() || isLoading}
+              className="absolute right-2 bottom-4 flex h-[40px] items-center gap-2 px-3"
+            >
+              {/* {t('chat.send')} */}
+              <Send size={16} />
+            </Button>
           </div>
-          <Button
-            onClick={handleSend}
-            disabled={!message.trim() || isLoading}
-            className="w-15 h-12 p-0 flex items-center justify-center"
-          >
-            {/* {t('chat.send')} */}
-            <Send size={16} />
-          </Button>
         </div>
       </div>
     </div>
@@ -109,6 +114,11 @@ const ChatMessage = ({ message }) => {
   const [showSources, setShowSources] = useState(false);
   const isUser = message.role === 'user';
   
+  // Nếu là user thì giới hạn width và đẩy sang phải, nếu không thì không thêm gì
+  const bubbleContainerClass = isUser
+    ? 'relative max-w-[65%] ml-auto'
+    : 'relative';
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -120,10 +130,9 @@ const ChatMessage = ({ message }) => {
           AI
         </div>
       )}
-      
-      <div className={`relative ${isUser ? 'order-first mr-3' : 'max-w-3xl'}`}>
-        <div
-          className={`rounded-lg p-3 ${
+
+      <div className={bubbleContainerClass}>
+        <div className={`rounded-lg p-3 ${
             isUser
               ? 'bg-primary text-white'
               : 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200'

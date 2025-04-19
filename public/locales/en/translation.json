@@ -50,7 +50,7 @@
       "embedding": "Embedding Model",
       "chunkSize": "Chunk Size",
       "overlap": "Chunk Overlap",
-      "clearData": "Clear All Data",
+      "clearData": "Clear",
       "clearDataDescription": "This will remove all your documents and chat history. This action cannot be undone.",
       "confirmClearData": "Are you sure you want to clear all data? This action cannot be undone.",
       "dataCleared": "All data has been cleared successfully",
