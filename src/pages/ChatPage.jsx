@@ -3,64 +3,97 @@ import { useState, useEffect } from 'react';
 import ChatInterface from '../components/features/ChatInterface';
 import useStore from '../store/useStore';
 
+const API_BASE_URL = 'http://127.0.0.1:8000';
+
 const ChatPage = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { currentConversation, setCurrentConversation, addMessage } = useStore();
-  
+  // isPdfReady prop is assumed true for now, or handled by routing/global state
+  // const { currentConversation, setCurrentConversation, addMessage } = useStore();
+  const store = useStore(); // Get the whole store instance
+
   useEffect(() => {
-    // Create a new conversation if none exists
-    if (!currentConversation) {
-      setCurrentConversation({
+    // Create a new conversation if none exists or if current one is null
+    if (!store.currentConversation) {
+      store.setCurrentConversation({
         id: Date.now(),
         title: 'New Conversation',
         messages: []
       });
     }
-  }, [currentConversation, setCurrentConversation]);
-  
-  const handleSendMessage = async (message) => {
-    // Add user message
-    addMessage({
+  }, [store.currentConversation, store.setCurrentConversation]);
+
+  const handleSendMessage = async (messageContent) => {
+    if (!messageContent.trim()) {
+      alert('Please enter a question.');
+      return;
+    }
+
+    const userMessage = {
       id: Date.now(),
       role: 'user',
-      content: message,
+      content: messageContent,
       timestamp: new Date().toISOString()
-    });
-    
+    };
+    store.addMessage(userMessage);
+
     setIsLoading(true);
-    
-    // Simulate API call with a delay
-    setTimeout(() => {
-      // Simulate an AI response
-      addMessage({
-        id: Date.now() + 1,
-        role: 'assistant',
-        content: `This is a simulated response to: "${message}"`,
-        timestamp: new Date().toISOString(),
-        sources: [
-          {
-            title: 'Document 1',
-            content: 'This is a relevant excerpt from Document 1 that helps answer the question.'
-          },
-          {
-            title: 'Document 2',
-            content: 'Here is another source from Document 2 with additional context and information.'
-          }
-        ]
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/ask`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query: messageContent }),
       });
-      
+
+      const result = await response.json();
+
+      if (response.ok) {
+        const assistantMessage = {
+          id: Date.now() + 1, // Ensure unique ID
+          role: 'assistant',
+          content: result.answer,
+          timestamp: new Date().toISOString(),
+          // sources: result.sources, // If API provides sources in the future
+        };
+        store.addMessage(assistantMessage);
+      } else {
+        // Display error to the user, e.g., by adding an error message to the chat
+        const errorMessage = {
+          id: Date.now() + 1,
+          role: 'system', // Or 'error' if you have specific styling
+          content: `Error: ${result.detail || 'Failed to get answer.'} (Status: ${response.status})`,
+          timestamp: new Date().toISOString(),
+        };
+        store.addMessage(errorMessage);
+        console.error('API Error:', result.detail || response.statusText);
+        // alert(`Error: ${result.detail || 'Failed to get answer.'}`);
+      }
+    } catch (error) {
+      console.error('Network error:', error);
+      const networkErrorMessage = {
+        id: Date.now() + 1,
+        role: 'system',
+        content: `Network Error: ${error.message || 'Could not connect to server.'}`,
+        timestamp: new Date().toISOString(),
+      };
+      store.addMessage(networkErrorMessage);
+      // alert(`Network Error: ${error.message || 'Could not connect to server.'}`);
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
-  
+
   return (
     <div className="flex flex-col h-full">
       <div className="flex-1 min-h-0">
-        {currentConversation && (
+        {store.currentConversation && (
           <ChatInterface
-            messages={currentConversation.messages}
+            messages={store.currentConversation.messages}
             onSendMessage={handleSendMessage}
             isLoading={isLoading}
+            // Pass a prop like isPdfReady if needed for UI changes
           />
         )}
       </div>
